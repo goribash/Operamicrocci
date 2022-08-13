@@ -1,0 +1,42 @@
+version: 2.1
+#123
+orbs:
+  python: circleci/python@0.2.1
+
+jobs:
+  build:
+    docker:
+      - image: circleci/python:3.6.4
+    steps:
+      - checkout
+      - run:
+          name: setup python venv  
+          command: |
+            python3 -m venv ~/.Operamicrocci
+            source ~/.Operamicrocci/bin/activate
+            
+      - run:
+          name: install hadolint
+          command: |
+            sudo wget -O /bin/hadolint https://github.com/hadolint/hadolint/releases/download/v1.17.5/hadolint-Linux-x86_64
+            sudo chmod 755 /bin/hadolint
+            
+      - run:
+          name: install dependencies  
+          command: |
+            pwd
+            source ~/.Operamicrocci/bin/activate
+            cd demos/flask-sklearn-student-starter/
+            make install
+            
+      - run:
+          name: run lint  
+          command: |
+            pwd
+            source ~/.Operamicrocci/bin/activate
+            cd demos/flask-sklearn-student-starter/
+            make lint
+workflows:
+  main:
+    jobs:
+      - build
